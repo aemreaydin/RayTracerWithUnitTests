@@ -13,6 +13,7 @@ XVec3::XVec3(const float x, const float y, const float z) {
 	Z = B = z;
 }
 
+
 XVec3 operator+(const XVec3 &lhs, const XVec3 &rhs) {
 	return { lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z };
 }

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 #include <sstream>
+#include <cmath>
+#include "XMath.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include "XVector.h"
@@ -13,12 +15,38 @@ namespace Microsoft {
 				ss << "Vector4: " << t.X << ", " << t.Y << ", " << t.Z << ", " << t.W;				
 				RETURN_WIDE_STRING(ss.str().c_str());
 			}
+			template<> std::wstring ToString<XVec3>(const XVec3& t) {
+				std::stringstream ss;
+				ss << "Vector4: " << t.X << ", " << t.Y << ", " << t.Z;				
+				RETURN_WIDE_STRING(ss.str().c_str());
+			}
 		}
 	}
 }
 
 
 namespace RayTracerUnitTest {
+	TEST_CLASS(Vector3UnitTest) {
+		// TODO Same tests from Vec4
+		TEST_METHOD(Vec3Magnitude) {
+			const XVec3 a(3.0F, 4.0F, 5.0F);
+			const XVec3 b(7.0F, 1.0F, 0.0F);
+			Assert::IsTrue(XMath::IsEqual(sqrtf(50), XMath::Magnitude(a)));
+			Assert::IsTrue(XMath::IsEqual(XMath::Magnitude(a), XMath::Magnitude(b)));
+		}
+		TEST_METHOD(Vec3Normalize) {
+			const XVec3 a(3.0F, 4.0F, 0.0F);
+			Assert::AreEqual(XMath::Normalize(a), XVec3(0.6F, 0.8F, 0.0F));
+			Assert::IsTrue(XMath::IsEqual(XMath::Magnitude(XMath::Normalize(a)), 1.0F));
+		}
+
+		TEST_METHOD(Vec3DotProduct) {
+			const XVec3 a(3.0F, 4.0F, 5.0F);
+			const XVec3 b(2.0F, 1.0F, 8.0F);
+			Assert::IsTrue(XMath::IsEqual(XMath::DotProduct(a, b), 50.0F));
+		}
+	};
+	
 	TEST_CLASS(Vector4UnitTest) {
 	public:
 		TEST_METHOD(Vec4IsPoint) {
@@ -55,6 +83,12 @@ namespace RayTracerUnitTest {
 			const auto fraction = .5F;
 			Assert::AreEqual(a * scale, XVec4(9.0F, -9.0F, 18.0F, 9.0F));
 			Assert::AreEqual(a * fraction, XVec4(1.5F, -1.5F, 3.0F, 1.5F));
+		}
+
+		TEST_METHOD(Vec4ScalarDivision) {
+			const XVec4 a(3.0F, -3.0F, 6.0F, 3.0F);
+			const auto scale = 3.0F;
+			Assert::AreEqual(a / scale, XVec4(1.0F, -1.0F, 2.0F, 1.0F));
 		}
 	};
 

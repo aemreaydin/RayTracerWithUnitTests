@@ -3,7 +3,7 @@ struct XVec3 {
 	float X, R;
 	float Y, G;
 	float Z, B;
-
+	
 	XVec3();
 	XVec3(float x, float y, float z);
 };
