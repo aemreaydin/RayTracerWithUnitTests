@@ -12,6 +12,7 @@ XVec3 operator+(const XVec3& lhs, const XVec3& rhs);
 XVec3 operator-(const XVec3& lhs, const XVec3& rhs);
 XVec3 operator-(const XVec3& lhs);
 XVec3 operator-(const XVec3& lhs, float value);
+XVec3 operator*(const XVec3& lhs, const XVec3& rhs);
 XVec3 operator*(const XVec3& lhs, float scale);
 XVec3 operator/(const XVec3& lhs, float scale);
 bool operator==(const XVec3& lhs, const XVec3& rhs);

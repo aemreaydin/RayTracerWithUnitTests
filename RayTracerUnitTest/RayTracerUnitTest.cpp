@@ -6,6 +6,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include "XVector.h"
+#include "XCanvas.h"
 
 using VMath3 = XVectorMath<XVec3>;
 using VMath4 = XVectorMath<XVec4>;
@@ -53,6 +54,12 @@ namespace RayTracerUnitTest {
 			const XVec3 b(2.0F, 3.0F, 4.0F);
 			Assert::AreEqual(VMath3::CrossProduct(a, b), XVec3(-1.0F, 2.0F, -1.0F));
 			Assert::AreEqual(VMath3::CrossProduct(b, a), XVec3(1.0F, -2.0F, 1.0F));
+		}
+
+		TEST_METHOD(Vec3ElementWiseMultiplication) {
+			const XVec3 a(1.0F, 2.0F, 3.0F);
+			const XVec3 b(2.0F, 3.0F, 4.0F);
+			Assert::AreEqual(a * b, XVec3(2.0F, 6.0F, 12.0F));
 		}
 	};
 
@@ -103,5 +110,21 @@ public:
 
 	TEST_CLASS(MathUnitTest) {
 public:
+	};
+
+	TEST_CLASS(CanvasUnitTest) {
+public:
+		TEST_METHOD(CreateCanvas) {
+			const XCanvas canvas(256, 256);
+			Assert::AreEqual(canvas.GetWidth(), 256);
+			Assert::AreEqual(canvas.GetHeight(), 256);
+		}
+
+		TEST_METHOD(WritePixel) {
+			XCanvas canvas(256, 256);
+			const XVec3 red(255.0F, 0.0F, 0.0F);
+			canvas.WritePixel(2, 3, red);
+			Assert::AreEqual(canvas.GetPixel(2, 3), red);
+		}
 	};
 }

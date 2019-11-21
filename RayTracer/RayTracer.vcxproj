@@ -123,11 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="XCanvas.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="XMath.cpp" />
     <ClCompile Include="XVector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="XCanvas.h" />
     <ClInclude Include="XMath.h" />
     <ClInclude Include="XVector.h" />
   </ItemGroup>

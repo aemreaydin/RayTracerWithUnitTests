@@ -29,6 +29,10 @@ XVec3 operator-(const XVec3& lhs, const float value) {
 	return { lhs.X - value, lhs.Y - value, lhs.Z - value };
 }
 
+XVec3 operator*(const XVec3 &lhs, const XVec3 &rhs) {
+	return { lhs.X * rhs.X, lhs.Y * rhs.Y, lhs.Z * rhs.Z };
+}
+
 XVec3 operator*(const XVec3& lhs, const float scale) {
 	return { lhs.X * scale, lhs.Y * scale, lhs.Z * scale };
 }

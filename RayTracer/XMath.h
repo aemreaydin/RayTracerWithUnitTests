@@ -1,12 +1,13 @@
 #pragma once
+#include <cmath>
 
-struct XVec3;
-struct XVec4;
 
-// TODO Remove W from the matrix operations as w is 0 on vectors and write a template???
 class XMath {
 public:
-	static bool IsEqual(float a, float b);
+	static constexpr auto EPSILON = 0.00000001F;
+	static bool IsEqual(const float a, const float b) {
+		return (fabs(a - b) < EPSILON);
+	}
 };
 
 
