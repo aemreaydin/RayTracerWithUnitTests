@@ -125,12 +125,14 @@
   <ItemGroup>
     <ClCompile Include="XCanvas.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="XMatrix.cpp" />
     <ClCompile Include="XVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XCanvas.h" />
     <ClInclude Include="XImageManager.h" />
     <ClInclude Include="XMath.h" />
+    <ClInclude Include="XMatrix.h" />
     <ClInclude Include="XVector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

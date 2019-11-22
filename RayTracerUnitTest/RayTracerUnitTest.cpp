@@ -7,6 +7,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include "XMath.h"
 #include "XVector.h"
+#include "XMatrix.h"
 #include "XCanvas.h"
 #include "XImageManager.h"
 
@@ -108,6 +109,54 @@ public:
 		const auto scale = 3.0F;
 		Assert::AreEqual(a / scale, XVec4(1.0F, -1.0F, 2.0F, 1.0F));
 	}
+	};
+
+	TEST_CLASS(MatrixUnitTest) {
+		TEST_METHOD(Mat4X4Constructor) {
+			XMat4x4 a{1.0F, 2.0F, 3.0F, 4.0F,
+					  5.5F, 6.5F, 7.5F, 8.5F,
+					  9.0F, 10.0F, 11.0F, 12.0F,
+					  13.5F, 14.5F, 15.5F, 16.5f};
+			XMat4x4 b{{XVec4(1.0F, 2.0F, 3.0F, 4.0F)},
+					 {XVec4(5.5F, 6.5F, 7.5F, 8.5F)},
+					 {XVec4(9.0F, 10.0F, 11.0F, 12.0F)},
+					 {XVec4(13.5F, 14.5F, 15.5F, 16.5f)}};
+
+			Assert::IsTrue(XMath::IsEqual(a.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(0,3), 4.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(1,0), 5.5F));
+			Assert::IsTrue(XMath::IsEqual(a.At(1,2), 7.5F));
+			Assert::IsTrue(XMath::IsEqual(a.At(2,2), 11.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(2,3), 12.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(3,0), 13.5F));
+			Assert::IsTrue(XMath::IsEqual(a.At(3,2), 15.5F));
+
+			Assert::IsTrue(XMath::IsEqual(b.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsEqual(b.At(0,3), 4.0F));
+			Assert::IsTrue(XMath::IsEqual(b.At(1,0), 5.5F));
+			Assert::IsTrue(XMath::IsEqual(b.At(1,2), 7.5F));
+			Assert::IsTrue(XMath::IsEqual(b.At(2,2), 11.0F));
+			Assert::IsTrue(XMath::IsEqual(b.At(2,3), 12.0F));
+			Assert::IsTrue(XMath::IsEqual(b.At(3,0), 13.5F));
+			Assert::IsTrue(XMath::IsEqual(b.At(3,2), 15.5F));
+		}
+		TEST_METHOD(Mat3X3Constructor) {
+			XMat3x3 a{1.0F, 2.0F, 3.0F,
+					  4.0F, 5.5F, 6.5F,
+					  7.5F, 8.5F, 9.0F};
+			Assert::IsTrue(XMath::IsEqual(a.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(0,2), 3.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(1,1), 5.5F));
+			Assert::IsTrue(XMath::IsEqual(a.At(2,2), 9.0F));
+		}
+		TEST_METHOD(Mat2X2Constructor) {
+			XMat2x2 a{1.0F, 2.0F,
+					  3.0F, 4.0F};
+			Assert::IsTrue(XMath::IsEqual(a.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(0,1), 2.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(1,0), 3.0F));
+			Assert::IsTrue(XMath::IsEqual(a.At(1,1), 4.0F));
+		}
 	};
 
 	TEST_CLASS(MathUnitTest) {
