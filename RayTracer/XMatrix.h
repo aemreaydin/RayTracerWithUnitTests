@@ -33,3 +33,5 @@ struct XMat4x4
 
 	float At(const uint32_t row, const uint32_t col);
 };
+
+bool operator==(XMat4x4& lhs, XMat4x4& rhs);

@@ -59,3 +59,14 @@ float XMat4x4::At(const uint32_t row, const uint32_t col) {
 	if(row > 3 || col > 3) throw std::runtime_error("Matrix out of bounds.");
 	return Matrix[row][col];
 }
+
+// TODO WHAT IS THIS SHIT???
+bool operator==(XMat4x4 &lhs, XMat4x4 &rhs) {
+	for(auto row = 0; row != 4; ++row) {
+		for(auto col = 0; col != 4; ++col) {
+			if(lhs.At(row, col) != rhs.At(row, col))
+				return false;
+		}
+	}
+	return true;
+}

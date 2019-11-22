@@ -157,6 +157,24 @@ public:
 			Assert::IsTrue(XMath::IsEqual(a.At(1,0), 3.0F));
 			Assert::IsTrue(XMath::IsEqual(a.At(1,1), 4.0F));
 		}
+
+		TEST_METHOD(Mat4X4Comparison) {
+			XMat4x4 a{1.0F, 2.0F, 3.0F, 4.0F,
+					  5.5F, 6.5F, 7.5F, 8.5F,
+					  9.0F, 10.0F, 11.0F, 12.0F,
+					  13.5F, 14.5F, 15.5F, 16.5f};
+			XMat4x4 b{1.0F, 2.0F, 3.0F, 4.0F,
+					  5.5F, 6.5F, 7.5F, 8.5F,
+					  9.0F, 10.0F, 11.0F, 12.0F,
+					  13.5F, 14.5F, 15.5F, 16.5f};
+			XMat4x4 c{2.0F, 2.0F, 3.0F, 4.0F,
+					  5.5F, 6.5F, 7.5F, 8.5F,
+					  9.0F, 10.0F, 11.0F, 12.0F,
+					  13.5F, 14.5F, 15.5F, 16.5f};
+
+			Assert::IsTrue(a == b);
+			Assert::IsFalse(a == c);
+		}
 	};
 
 	TEST_CLASS(MathUnitTest) {
