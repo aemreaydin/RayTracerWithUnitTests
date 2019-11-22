@@ -1,8 +1,9 @@
 #pragma once
+#include <iostream>
+
 struct XVec3 {
-	float X, R;
-	float Y, G;
-	float Z, B;
+	float X, Y, Z;
+	float R, G, B;
 
 	XVec3();
 	XVec3(float x, float y, float z);
@@ -16,6 +17,7 @@ XVec3 operator*(const XVec3& lhs, const XVec3& rhs);
 XVec3 operator*(const XVec3& lhs, float scale);
 XVec3 operator/(const XVec3& lhs, float scale);
 bool operator==(const XVec3& lhs, const XVec3& rhs);
+std::ostream& operator<< (std::ostream& stream, const XVec3 vec);
 
 struct XVec4 {
 	float X, R;

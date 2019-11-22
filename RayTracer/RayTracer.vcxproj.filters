@@ -35,5 +35,8 @@
     <ClInclude Include="XCanvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="XImageManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

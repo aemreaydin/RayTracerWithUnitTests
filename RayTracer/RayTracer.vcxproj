@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XCanvas.h" />
+    <ClInclude Include="XImageManager.h" />
     <ClInclude Include="XMath.h" />
     <ClInclude Include="XVector.h" />
   </ItemGroup>

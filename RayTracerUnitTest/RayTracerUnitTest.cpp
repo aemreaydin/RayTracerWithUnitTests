@@ -2,11 +2,13 @@
 #include "CppUnitTest.h"
 #include <sstream>
 #include <cmath>
-#include "XMath.h"
+#include <fstream>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#include "XMath.h"
 #include "XVector.h"
 #include "XCanvas.h"
+#include "XImageManager.h"
 
 using VMath3 = XVectorMath<XVec3>;
 using VMath4 = XVectorMath<XVec4>;
@@ -110,6 +112,14 @@ public:
 
 	TEST_CLASS(MathUnitTest) {
 public:
+		TEST_METHOD(MathClamp) {
+			const auto fa = -5.0F;
+			const auto fb = 280.0F;
+			auto fClamped = XMath::Clamp(fa, 0.0F, 255.0F);
+			Assert::IsTrue(XMath::IsEqual(fClamped, 0.0F));
+			fClamped = XMath::Clamp(fb, 0.0F, 255.0F);
+			Assert::IsTrue(XMath::IsEqual(fClamped, 255.0F));
+		}
 	};
 
 	TEST_CLASS(CanvasUnitTest) {
@@ -125,6 +135,30 @@ public:
 			const XVec3 red(255.0F, 0.0F, 0.0F);
 			canvas.WritePixel(2, 3, red);
 			Assert::AreEqual(canvas.GetPixel(2, 3), red);
+		}
+
+		TEST_METHOD(SaveCanvasAsPpm) {
+			XCanvas canvas(3, 3);
+			canvas.WritePixel(0, 0, XVec3(255.0F, 0.0F, 0.0F));
+			canvas.WritePixel(1, 1, XVec3(0.0F, 255.0F, 255.0F));
+			canvas.WritePixel(2, 2, XVec3(0.0F, 0.0F, 255.0F));
+
+			const auto filename = "imageOutput.ppm";
+			XImageManager::SaveCanvasAsPpm(filename, canvas);
+
+			std::ifstream readFile(filename);
+			Assert::IsTrue(readFile.is_open());
+
+			char out[256];
+			readFile.getline(out, 256);
+			readFile.getline(out, 256);
+			readFile.getline(out, 256);
+			readFile.getline(out, 256);
+			Assert::AreEqual(out, "255 0 0 0 0 0 0 0 0 ");
+			readFile.getline(out, 256);
+			Assert::AreEqual(out, "0 0 0 0 255 255 0 0 0 ");
+			readFile.getline(out, 256);
+			Assert::AreEqual(out, "0 0 0 0 0 0 0 0 255 ");
 		}
 	};
 }

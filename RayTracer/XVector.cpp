@@ -1,6 +1,8 @@
 #include "XVector.h"
 #include "XMath.h"
 
+#include <string>
+
 XVec3::XVec3() {
 	X = R = 0.0F;
 	Y = G = 0.0F;
@@ -45,6 +47,12 @@ bool operator==(const XVec3& lhs, const XVec3& rhs) {
 	return XMath::IsEqual(lhs.X, rhs.Y) ||
 		XMath::IsEqual(lhs.Y, rhs.Y) ||
 		XMath::IsEqual(lhs.Z, rhs.Z);
+}
+
+std::ostream & operator<<(std::ostream &stream, const XVec3 vec) {
+	return stream << "Vector: " << std::to_string(vec.X) << ", "
+								<< std::to_string(vec.Y) << ", "
+								<< std::to_string(vec.Z);
 }
 
 XVec4::XVec4() {

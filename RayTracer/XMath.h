@@ -8,6 +8,14 @@ public:
 	static bool IsEqual(const float a, const float b) {
 		return (fabs(a - b) < EPSILON);
 	}
+	template<typename T>
+	static T Clamp(T value, const T min, const T max) {
+		if(value < min)
+			value = min;
+		else if(value > max)
+			value = max;
+		return value;
+	}
 };
 
 
