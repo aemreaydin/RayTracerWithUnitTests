@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-struct XVec3;
+struct XVector;
 
 class XCanvas
 {
@@ -10,9 +10,9 @@ public:
 
 	int GetWidth() const;
 	int GetHeight() const;
-	std::vector<std::vector<XVec3>> GetPixels() const;
-	XVec3 GetPixel(size_t x, size_t y) const;
-	void WritePixel(size_t x, size_t y, const XVec3& value);
+	std::vector<std::vector<XVector>> GetPixels() const;
+	XVector GetPixel(size_t x, size_t y) const;
+	void WritePixel(size_t x, size_t y, const XVector& value);
 	//std::vector<XVec3> GetPixels() const;
 	//XVec3 GetPixelAtIndex(int x, int y) const;
 
@@ -23,6 +23,6 @@ private:
 	int mWidth;
 	int mHeight;
 	//std::vector<XVec3> mVecPixels;
-	std::vector<std::vector<XVec3>> mVecPixels;
+	std::vector<std::vector<XVector>> mVecPixels;
 	//XVec3* pixels;
 };

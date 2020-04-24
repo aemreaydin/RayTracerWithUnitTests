@@ -39,9 +39,9 @@ private:
 		const auto& pixels = canvas.GetPixels();
 		for(const auto& row : pixels) {
 			for(const auto& col : row) {
-				output << static_cast<int>(XMath::Clamp(col.R, 0.0F, 255.0F)) << " "
-					   << static_cast<int>(XMath::Clamp(col.G, 0.0F, 255.0F)) << " "
-					   << static_cast<int>(XMath::Clamp(col.B, 0.0F, 255.0F)) << " ";
+				output << static_cast<int>(XMath::Clamp(col.X, 0.0F, 255.0F)) << " "
+					   << static_cast<int>(XMath::Clamp(col.Y, 0.0F, 255.0F)) << " "
+					   << static_cast<int>(XMath::Clamp(col.Z, 0.0F, 255.0F)) << " ";
 			}
 			output << '\n';
 		}
