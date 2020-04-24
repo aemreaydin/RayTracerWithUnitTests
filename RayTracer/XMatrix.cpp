@@ -1,5 +1,6 @@
 #include "XMatrix.h"
-#include "XVector.h"
+#include "XVector4.h"
+
 
 XMat2x2::XMat2x2(const float m00, const float m01, const float m10, const float m11) {
 	Matrix = {
