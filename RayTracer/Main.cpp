@@ -18,7 +18,7 @@ int main() {
 			XVector vec(static_cast<float>(i) / nx, static_cast<float>(j) / ny, 0.2f);
 			vec *= 255.0f;
 
-			canvas.WritePixel(i, j, vec);
+			canvas.WriteToPixel(i, j, vec);
 		}
 	}
 	XImageManager::SaveCanvasAsPpm("color.ppm", canvas);
