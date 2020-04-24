@@ -6,7 +6,7 @@ XCanvas::XCanvas(const int width, const int height)  {
 	mHeight = height;
 
 	// TODO: Either use 1D Vector with indexing or C 1D Array
-	mVecPixels.resize(mWidth, std::vector<XVec3>(mHeight));
+	mVecPixels.resize(mWidth, std::vector<XVector>(mHeight));
 
 	//auto** pixels = new XVec3*[mWidth];
 	//for(auto row = 0; row != mWidth; ++row) {
@@ -29,14 +29,14 @@ int XCanvas::GetHeight() const {
 	return mHeight;
 }
 
-std::vector<std::vector<XVec3>> XCanvas::GetPixels() const {
+std::vector<std::vector<XVector>> XCanvas::GetPixels() const {
 	return mVecPixels;
 }
 
-XVec3 XCanvas::GetPixel(const size_t x, const size_t y) const {
+XVector XCanvas::GetPixel(const size_t x, const size_t y) const {
 	return mVecPixels[x][y];
 }
-void XCanvas::WritePixel(const size_t x, const size_t y, const XVec3& value) {
+void XCanvas::WritePixel(const size_t x, const size_t y, const XVector& value) {
 	mVecPixels[x][y] = value;
 }
 

@@ -38,14 +38,14 @@ XMat4x4::XMat4x4(const float m00, const float m01, const float m02, const float 
 		{m30, m31, m32, m33}
 	};
 	matrix = {
-		XVec4{m00, m01, m02, m03},
-		XVec4{m10, m11, m12, m13},
-		XVec4{m20, m21, m22, m23},
-		XVec4{m30, m31, m32, m33}
+		XVector4{m00, m01, m02, m03},
+		XVector4{m10, m11, m12, m13},
+		XVector4{m20, m21, m22, m23},
+		XVector4{m30, m31, m32, m33}
 	};
 }
 
-XMat4x4::XMat4x4(const XVec4 r1, const XVec4 r2, const XVec4 r3, const XVec4 r4) {
+XMat4x4::XMat4x4(const XVector4 r1, const XVector4 r2, const XVector4 r3, const XVector4 r4) {
 	Matrix = {
 		{r1.X, r1.Y, r1.Z, r1.W},
 		{r2.X, r2.Y, r2.Z, r2.W},
