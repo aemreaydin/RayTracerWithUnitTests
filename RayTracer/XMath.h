@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 
+using Uint32 = uint32_t;
 static constexpr auto EPSILON = 1e-8;
 
 class XMath {

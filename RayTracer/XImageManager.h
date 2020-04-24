@@ -13,29 +13,29 @@ public:
 		if(!file.is_open())
 			throw std::runtime_error("Failed to open the image.");
 
-		writePpmHeader(canvas, file);
-		writePpmBody(canvas, file);
+		WritePpmHeader(canvas, file);
+		WritePpmBody(canvas, file);
 	}
 
 private:
 	enum class EImageType {
-		PPM
+		Ppm
 	};
-	static void writeHeader(const EImageType imageType, const XCanvas& canvas, std::ofstream& output) {
+	static void WriteHeader(const EImageType imageType, const XCanvas& canvas, std::ofstream& output) {
 		switch(imageType) {
-		case EImageType::PPM:
-			writePpmHeader(canvas, output);
+		case EImageType::Ppm:
+			WritePpmHeader(canvas, output);
 			break;
 		default: ;
 			throw std::runtime_error("Failed to obtain the type.");
 		}
 	}
-	static void writePpmHeader(const XCanvas& canvas, std::ofstream& output) {
+	static void WritePpmHeader(const XCanvas& canvas, std::ofstream& output) {
 		output << "P3\n";
 		output << canvas.GetWidth() << " " << canvas.GetHeight() << '\n';
 		output << 255 << '\n';
 	}
-	static void writePpmBody(const XCanvas& canvas, std::ofstream& output) {
+	static void WritePpmBody(const XCanvas& canvas, std::ofstream& output) {
 		const auto& pixels = canvas.GetPixels();
 		for(const auto& row : pixels) {
 			for(const auto& col : row) {
