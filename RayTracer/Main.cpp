@@ -5,7 +5,6 @@
 #include "XMath.h"
 #include "XImageManager.h"
 
-using XVM3 = XVectorMath<XVector>;
 
 int main() {
 

@@ -7,25 +7,19 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include "XMath.h"
 #include "XVector.h"
+#include "XVector4.h"
 #include "XMatrix.h"
 #include "XCanvas.h"
 #include "XImageManager.h"
 
-using VMath3 = XVectorMath<XVector>;
-using VMath4 = XVectorMath<XVector4>;
-
 namespace Microsoft {
 	namespace VisualStudio {
 		namespace CppUnitTestFramework {
-			template<> std::wstring ToString<XVector4>(const XVector4& t) {
-				std::stringstream ss;
-				ss << "Vector4: " << t.X << ", " << t.Y << ", " << t.Z << ", " << t.W;
-				RETURN_WIDE_STRING(ss.str().c_str());
+			template<> std::wstring ToString<XVector4>(const XVector4& t) {				
+				RETURN_WIDE_STRING(t.ToString().c_str());
 			}
 			template<> std::wstring ToString<XVector>(const XVector& t) {
-				std::stringstream ss;
-				ss << "Vector4: " << t.X << ", " << t.Y << ", " << t.Z;
-				RETURN_WIDE_STRING(ss.str().c_str());
+				RETURN_WIDE_STRING(t.ToString().c_str());
 			}
 		}
 	}
@@ -33,30 +27,30 @@ namespace Microsoft {
 
 namespace RayTracerUnitTest {
 	TEST_CLASS(Vector3UnitTest) {
-		// TODO Same tests from Vec4
 		TEST_METHOD(Vec3Magnitude) {
 			const XVector a(3.0F, 4.0F, 5.0F);
 			const XVector b(7.0F, 1.0F, 0.0F);
-			Assert::IsTrue(XMath::IsEqual(sqrtf(50), VMath3::Magnitude(a)));
-			Assert::IsTrue(XMath::IsEqual(VMath3::Magnitude(a), VMath3::Magnitude(b)));
+			Assert::IsTrue(XMath::IsNearlyEqual(sqrtf(50), a.Magnitude()));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.Magnitude(), b.Magnitude()));
 		}
 		TEST_METHOD(Vec3Normalize) {
-			const XVector a(3.0F, 4.0F, 0.0F);
-			Assert::AreEqual(VMath3::Normalize(a), XVector(0.6F, 0.8F, 0.0F));
-			Assert::IsTrue(XMath::IsEqual(VMath3::Magnitude(VMath3::Normalize(a)), 1.0F));
+			XVector a(3.0F, 4.0F, 0.0F);
+			Assert::IsTrue(a.Normalize());
+			Assert::AreEqual(a, XVector(0.6F, 0.8F, 0.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.Magnitude(), 1.0F));
 		}
 
 		TEST_METHOD(Vec3DotProduct) {
 			const XVector a(3.0F, 4.0F, 5.0F);
 			const XVector b(2.0F, 1.0F, 8.0F);
-			Assert::IsTrue(XMath::IsEqual(VMath3::DotProduct(a, b), 50.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(XVector::DotProduct(a, b), 50.0F));
 		}
 
 		TEST_METHOD(Vec3CrossProduct) {
 			const XVector a(1.0F, 2.0F, 3.0F);
 			const XVector b(2.0F, 3.0F, 4.0F);
-			Assert::AreEqual(VMath3::CrossProduct(a, b), XVector(-1.0F, 2.0F, -1.0F));
-			Assert::AreEqual(VMath3::CrossProduct(b, a), XVector(1.0F, -2.0F, 1.0F));
+			Assert::AreEqual(XVector::CrossProduct(a, b), XVector(-1.0F, 2.0F, -1.0F));
+			Assert::AreEqual(XVector::CrossProduct(b, a), XVector(1.0F, -2.0F, 1.0F));
 		}
 
 		TEST_METHOD(Vec3ElementWiseMultiplication) {
@@ -68,16 +62,6 @@ namespace RayTracerUnitTest {
 
 	TEST_CLASS(Vector4UnitTest) {
 public:
-	TEST_METHOD(Vec4IsPoint) {
-		const XVector4 pointVector(0.0F, 0.0F, 0.0F, 1.0F);
-		Assert::IsTrue(pointVector.IsPoint());
-	}
-
-	TEST_METHOD(Vec4IsVector) {
-		const XVector4 vectorVector(0.0F, 0.0F, 0.0F, 0.0F);
-		Assert::IsFalse(vectorVector.IsPoint());
-	}
-
 	TEST_METHOD(Vec4Addition) {
 		const XVector4 a(3.0F, -2.0F, 5.0F, 1.0f);
 		const XVector4 b(-2.0F, 3.0F, 1.0F, 0.0F);
@@ -122,40 +106,40 @@ public:
 					 {XVector4(9.0F, 10.0F, 11.0F, 12.0F)},
 					 {XVector4(13.5F, 14.5F, 15.5F, 16.5f)}};
 
-			Assert::IsTrue(XMath::IsEqual(a.At(0,0), 1.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(0,3), 4.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(1,0), 5.5F));
-			Assert::IsTrue(XMath::IsEqual(a.At(1,2), 7.5F));
-			Assert::IsTrue(XMath::IsEqual(a.At(2,2), 11.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(2,3), 12.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(3,0), 13.5F));
-			Assert::IsTrue(XMath::IsEqual(a.At(3,2), 15.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,3), 4.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,0), 5.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,2), 7.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(2,2), 11.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(2,3), 12.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(3,0), 13.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(3,2), 15.5F));
 
-			Assert::IsTrue(XMath::IsEqual(b.At(0,0), 1.0F));
-			Assert::IsTrue(XMath::IsEqual(b.At(0,3), 4.0F));
-			Assert::IsTrue(XMath::IsEqual(b.At(1,0), 5.5F));
-			Assert::IsTrue(XMath::IsEqual(b.At(1,2), 7.5F));
-			Assert::IsTrue(XMath::IsEqual(b.At(2,2), 11.0F));
-			Assert::IsTrue(XMath::IsEqual(b.At(2,3), 12.0F));
-			Assert::IsTrue(XMath::IsEqual(b.At(3,0), 13.5F));
-			Assert::IsTrue(XMath::IsEqual(b.At(3,2), 15.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(0,3), 4.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(1,0), 5.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(1,2), 7.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(2,2), 11.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(2,3), 12.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(3,0), 13.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(b.At(3,2), 15.5F));
 		}
 		TEST_METHOD(Mat3X3Constructor) {
 			XMat3x3 a{1.0F, 2.0F, 3.0F,
 					  4.0F, 5.5F, 6.5F,
 					  7.5F, 8.5F, 9.0F};
-			Assert::IsTrue(XMath::IsEqual(a.At(0,0), 1.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(0,2), 3.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(1,1), 5.5F));
-			Assert::IsTrue(XMath::IsEqual(a.At(2,2), 9.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,2), 3.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,1), 5.5F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(2,2), 9.0F));
 		}
 		TEST_METHOD(Mat2X2Constructor) {
 			XMat2x2 a{1.0F, 2.0F,
 					  3.0F, 4.0F};
-			Assert::IsTrue(XMath::IsEqual(a.At(0,0), 1.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(0,1), 2.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(1,0), 3.0F));
-			Assert::IsTrue(XMath::IsEqual(a.At(1,1), 4.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,0), 1.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,1), 2.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,0), 3.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,1), 4.0F));
 		}
 
 		TEST_METHOD(Mat4X4Comparison) {
@@ -183,9 +167,9 @@ public:
 			const auto fa = -5.0F;
 			const auto fb = 280.0F;
 			auto fClamped = XMath::Clamp(fa, 0.0F, 255.0F);
-			Assert::IsTrue(XMath::IsEqual(fClamped, 0.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(fClamped, 0.0F));
 			fClamped = XMath::Clamp(fb, 0.0F, 255.0F);
-			Assert::IsTrue(XMath::IsEqual(fClamped, 255.0F));
+			Assert::IsTrue(XMath::IsNearlyEqual(fClamped, 255.0F));
 		}
 	};
 
