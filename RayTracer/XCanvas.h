@@ -17,7 +17,7 @@ public:
 	void SetWidth(int width);
 	void SetHeight(int height);
 private:
-	
+
 	int Width;
 	int Height;
 	std::vector<std::vector<XVector>> VecPixels;

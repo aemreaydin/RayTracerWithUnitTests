@@ -1,20 +1,25 @@
-#include <iostream>
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
+
 
 #include "XVector.h"
 #include "XCanvas.h"
-#include "XMath.h"
 #include "XImageManager.h"
 
 
-int main() {
+int main()
+{
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	XCanvas canvas;
 
 	const auto nx = 256;
 	const auto ny = 256;
-	for(auto j = ny - 1; j >= 0; j--)
+	for (auto j = ny - 1; j >= 0; j--)
 	{
-		for(auto i = 0; i != nx; i++) {
+		for (auto i = 0; i != nx; i++)
+		{
 			XVector vec(static_cast<float>(i) / nx, static_cast<float>(j) / ny, 0.2f);
 			vec *= 255.0f;
 

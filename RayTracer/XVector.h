@@ -33,9 +33,9 @@ struct alignas(16) XVector
 //// START OF NON-MEMBER OPERATOR OVERLOADS
 inline bool operator==(const XVector& lhs, const XVector& rhs)
 {
-	return XMath::IsNearlyEqual(lhs.X, rhs.Y) ||
-		   XMath::IsNearlyEqual(lhs.Y, rhs.Y) ||
-		   XMath::IsNearlyEqual(lhs.Z, rhs.Z);
+	return XMath::IsNearlyEqual(lhs.X, rhs.Y, SMALL_EPSILON) ||
+		   XMath::IsNearlyEqual(lhs.Y, rhs.Y, SMALL_EPSILON) ||
+		   XMath::IsNearlyEqual(lhs.Z, rhs.Z, SMALL_EPSILON);
 }
 
 inline XVector operator+(const XVector& lhs, const XVector& rhs)
