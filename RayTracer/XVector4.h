@@ -9,8 +9,8 @@ struct XVector4
 	float W;
 
 	XVector4();
-	XVector4(float x,float y, float z, float w = 1.0F);
-	explicit XVector4(const XVector& vec3, float w = 1.0F);
+	XVector4(float x,float y, float z, float w = 1.0f);
+	explicit XVector4(const XVector& vec3, float w = 1.0f);
 
 	// Arithmetic Operations
 	XVector4& operator+=(const XVector4& rhs);
@@ -25,10 +25,10 @@ struct XVector4
 //// START OF NON-MEMBER OPERATOR OVERLOADS
 inline bool operator==(const XVector4& lhs, const XVector4& rhs)
 {
-	return XMath::IsNearlyEqual(lhs.X, rhs.Y) &&
-		   XMath::IsNearlyEqual(lhs.Y, rhs.Y) &&
-		   XMath::IsNearlyEqual(lhs.Z, rhs.Z) &&
-		   XMath::IsNearlyEqual(lhs.W, rhs.W);
+	return XMath::IsNearlyEqual(lhs.X, rhs.X, SMALL_EPSILON) &&
+		   XMath::IsNearlyEqual(lhs.Y, rhs.Y, SMALL_EPSILON) &&
+		   XMath::IsNearlyEqual(lhs.Z, rhs.Z, SMALL_EPSILON) &&
+		   XMath::IsNearlyEqual(lhs.W, rhs.W, SMALL_EPSILON);
 }
 
 inline XVector4 operator+(const XVector4& lhs, const XVector4& rhs)

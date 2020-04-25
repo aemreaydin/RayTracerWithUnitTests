@@ -23,13 +23,17 @@ struct XMatrix4
 	
 	// Identity Functions
 	void SetIdentity();
+	XMatrix4 Tranpose() const;
+	
 	static XMatrix4 Identity();
-
+	
 	// Accessors
 	float operator()(Uint32 row, Uint32 col) const;
 	float At(Uint32 row, Uint32 col) const;
 	float& operator()(Uint32 row, Uint32 col);
 	float& At(Uint32 row, Uint32 col);
+
+	std::string ToString() const;
 };
 
 //// START OF NON-MEMBER OPERATOR OVERLOADS
@@ -94,7 +98,7 @@ inline XMatrix4 operator*(const XMatrix4& lhs, const XMatrix4& rhs)
 		{
 			for(Uint32 ind = 0; ind != 4; ind++)
 			{
-				matrix(row, col) = lhs(row, ind) * rhs(ind, col);
+				matrix(row, col) += lhs(row, ind) * rhs(ind, col);
 			}
 		}
 	}
@@ -190,16 +194,18 @@ inline XMatrix4& XMatrix4::operator-=(const XMatrix4& rhs)
 
 inline XMatrix4& XMatrix4::operator*=(const XMatrix4& rhs)
 {
+	auto matrix = XMatrix4();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
 		{
 			for(Uint32 ind = 0; ind != 4; ind++)
 			{
-				(*this)(row, col) = (*this)(row, ind) * rhs(ind, col);
+				matrix(row, col) += (*this)(row, ind) * rhs(ind, col);
 			}
 		}
 	}
+	*this = matrix;
 	return *this;
 }
 
@@ -241,6 +247,20 @@ inline void XMatrix4::SetIdentity()
 	Matrix[3][0] = 0.0f; Matrix[3][1] = 0.0f;  Matrix[3][2] = 0.0f;  Matrix[3][3] = 1.0f;
 }
 
+inline XMatrix4 XMatrix4::Tranpose() const
+{
+	auto transposed = *this;
+	for(Uint32 row = 0; row != 4; row++)
+	{
+		for(Uint32 col = 0; col != 4; col++)
+		{
+			if(row <= col) continue;
+			std::swap(transposed(row, col), transposed(col, row));
+		}
+	}
+	return transposed;
+}
+
 inline XMatrix4 XMatrix4::Identity()
 {
 	return {XVector4(1.0f, 0.0f, 0.0f, 0.0f),
@@ -271,6 +291,11 @@ inline float& XMatrix4::At(const Uint32 row, const Uint32 col)
 {
 	if (row > 3 || col > 3) throw std::runtime_error("Matrix out of bounds.");
 	return Matrix[row][col];
+}
+
+inline std::string XMatrix4::ToString() const
+{
+	return std::to_string(Matrix[0][0]);
 }
 
 //struct XMatrix2 {

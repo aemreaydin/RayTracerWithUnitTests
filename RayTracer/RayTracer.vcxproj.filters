@@ -41,5 +41,8 @@
     <ClInclude Include="XVector4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="XColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
