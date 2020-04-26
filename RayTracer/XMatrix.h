@@ -1,9 +1,12 @@
 #pragma once
 #include "XVector4.h"
+#include "XMatrix3.h"
 
-struct XMatrix4
+#include <DirectXMath.h>
+
+__declspec(align(16)) struct XMatrix4
 {
-	__declspec(align(16)) float Matrix[4][4]{};
+	float Matrix[4][4]{};
 
 	XMatrix4();
 	XMatrix4(float m00, float m01, float m02, float m03,
@@ -24,6 +27,9 @@ struct XMatrix4
 	// Identity Functions
 	void SetIdentity();
 	XMatrix4 Tranpose() const;
+	float Determinant() const;
+	bool IsMatrixInvertible() const;
+	XMatrix4 Inverse() const;
 	
 	static XMatrix4 Identity();
 	
@@ -43,7 +49,7 @@ inline bool operator==(const XMatrix4& lhs, const XMatrix4& rhs)
 	{
 		for(Uint32 col = 0; col != 4; col++)
 		{
-			if(lhs(row, col) != rhs(row, col))
+			if(!XMath::IsNearlyEqual(lhs(row, col), rhs(row, col), SMALL_EPSILON))
 				return false;
 		}
 	}
@@ -261,6 +267,51 @@ inline XMatrix4 XMatrix4::Tranpose() const
 	return transposed;
 }
 
+inline float XMatrix4::Determinant() const
+{
+	return Matrix[0][0] * (
+				Matrix[1][1] * (Matrix[2][2] * Matrix[3][3] - Matrix[2][3] * Matrix[3][2]) -
+				Matrix[2][1] * (Matrix[1][2] * Matrix[3][3] - Matrix[1][3] * Matrix[3][2]) +
+				Matrix[3][1] * (Matrix[1][2] * Matrix[2][3] - Matrix[1][3] * Matrix[2][2])
+				) -
+			Matrix[1][0] * (
+				Matrix[0][1] * (Matrix[2][2] * Matrix[3][3] - Matrix[2][3] * Matrix[3][2]) -
+				Matrix[2][1] * (Matrix[0][2] * Matrix[3][3] - Matrix[0][3] * Matrix[3][2]) +
+				Matrix[3][1] * (Matrix[0][2] * Matrix[2][3] - Matrix[0][3] * Matrix[2][2])
+				) +
+			Matrix[2][0] * (
+				Matrix[0][1] * (Matrix[1][2] * Matrix[3][3] - Matrix[1][3] * Matrix[3][2]) -
+				Matrix[1][1] * (Matrix[0][2] * Matrix[3][3] - Matrix[0][3] * Matrix[3][2]) +
+				Matrix[3][1] * (Matrix[0][2] * Matrix[1][3] - Matrix[0][3] * Matrix[1][2])
+				) -
+			Matrix[3][0] * (
+				Matrix[0][1] * (Matrix[1][2] * Matrix[2][3] - Matrix[1][3] * Matrix[2][2]) -
+				Matrix[1][1] * (Matrix[0][2] * Matrix[2][3] - Matrix[0][3] * Matrix[2][2]) +
+				Matrix[2][1] * (Matrix[0][2] * Matrix[1][3] - Matrix[0][3] * Matrix[1][2])
+				);
+}
+
+inline bool XMatrix4::IsMatrixInvertible() const
+{
+	return Determinant() != 0.0f;
+}
+
+inline XMatrix4 XMatrix4::Inverse() const
+{
+	if(!IsMatrixInvertible())
+		return Identity();
+
+	using namespace DirectX;
+	// ReSharper disable once CppLocalVariableMayBeConst
+	auto dstMatrix = XMatrix4();
+	
+	const auto xmMatrix = XMLoadFloat4x4A(reinterpret_cast<const XMFLOAT4X4A*>(Matrix));
+	const auto xmDstMatrix = XMMatrixInverse(nullptr, xmMatrix);
+	XMStoreFloat4x4A(reinterpret_cast<XMFLOAT4X4A*>(dstMatrix.Matrix), xmDstMatrix);
+
+	return dstMatrix;
+}
+
 inline XMatrix4 XMatrix4::Identity()
 {
 	return {XVector4(1.0f, 0.0f, 0.0f, 0.0f),
@@ -297,57 +348,3 @@ inline std::string XMatrix4::ToString() const
 {
 	return std::to_string(Matrix[0][0]);
 }
-
-//struct XMatrix2 {
-//	XMatrix2(float m00, float m01, float m10, float m11);
-//	float At(uint32_t row, uint32_t col);
-//
-//	std::vector<std::vector<float>> Matrix;
-//};
-//
-//struct XMatrix3 {
-//	XMatrix3(float m00, float m01, float m02, 
-//			float m10, float m11, float m12,
-//			float m20, float m21, float m22);
-//	float At(uint32_t row, uint32_t col);
-//
-//	std::vector<std::vector<float>> Matrix;
-//};
-
-//XMatrix2::XMatrix2(const float m00, const float m01, const float m10, const float m11) {
-//	Matrix = {
-//		{m00, m01},
-//		{m10, m11}
-//	};
-//}
-//
-//float XMatrix2::At(const uint32_t row, const uint32_t col) {
-//	if(row > 1 || col > 1) throw std::runtime_error("Matrix out of bounds.");
-//	return Matrix[row][col];
-//}
-//
-//XMatrix3::XMatrix3(const float m00, const float m01, const float m02, 
-//				 const float m10, const float m11, const float m12, 
-//				 const float m20, const float m21, const float m22) {
-//		Matrix = {
-//		{m00, m01, m02},
-//		{m10, m11, m12},
-//		{m20, m21, m22},
-//	};
-//}
-//float XMatrix3::At(const uint32_t row, const uint32_t col) {
-//	if(row > 2 || col > 2) throw std::runtime_error("Matrix out of bounds.");
-//	return Matrix[row][col];
-//}
-
-
-//// TODO WHAT IS THIS SHIT???
-//bool operator==(XMatrix4 &lhs, XMatrix4 &rhs) {
-//	for(auto row = 0; row != 4; ++row) {
-//		for(auto col = 0; col != 4; ++col) {
-//			if(lhs.At(row, col) != rhs.At(row, col))
-//				return false;
-//		}
-//	}
-//	return true;
-//}
