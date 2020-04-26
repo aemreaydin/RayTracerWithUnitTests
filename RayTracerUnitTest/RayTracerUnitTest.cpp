@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CppUnitTest.h"
 #include <sstream>
 #include <cmath>
@@ -195,7 +195,7 @@ namespace RayTracerUnitTest
 
 		TEST_METHOD(MatrixTranspose)
 		{
-			XMatrix4 a{
+			const XMatrix4 a{
 				1.0f, 2.0f, 3.0f, 4.0f,
 				5.0f, 6.0f, 7.0f, 8.0f,
 				9.0f, 8.0f, 7.0f, 6.0f,
@@ -211,6 +211,45 @@ namespace RayTracerUnitTest
 
 			const auto b = a.Tranpose();
 			Assert::AreEqual(b, transposed);
+		}
+
+		TEST_METHOD(MatrixInvertable)
+		{
+			const XMatrix4 a{
+				6.0f, 4.0f, 4.0f, 4.0f,
+				5.0f, 5.0f, 7.0f, 6.0f,
+				4.0f, -9.0f, 3.0f, -7.0f,
+				9.0f, 1.0f, 7.0f, 6.0f
+			};
+
+			const XMatrix4 b{
+				-4.0f, 2.0f, -2.0f, -3.0f,
+				9.0f, 6.0f, 2.0f, 6.0f,
+				0.0f, -5.0f, 1.0f, -5.0f,
+				0.0f, 0.0f, 0.0f, 0.0f
+			};
+
+			Assert::IsTrue(a.IsMatrixInvertible());
+			Assert::IsFalse(b.IsMatrixInvertible());
+		}
+		
+		TEST_METHOD(MatrixInverse)
+		{
+			const XMatrix4 a{
+				-5.0f, 2.0f, 6.0f, -8.0f,
+				1.0f, -5.0f, 1.0f, 8.0f,
+				7.0f, 7.0f, -6.0f, -7.0f,
+				1.0f, -3.0f, 7.0f, 4.0f
+			};
+
+			const XMatrix4 inverse{
+				0.21805f, 0.45113f, 0.24060f, -0.04511f,
+				-0.80827f, -1.45677f, -0.44361f, 0.52068f,
+				-0.07895f, -0.22368f, -0.05263f, 0.19737f,
+				-0.52256f, -0.81391f, -0.30075f, 0.30639f
+			};
+
+			Assert::AreEqual(a.Inverse(), inverse);
 		}
 
 		//TEST_METHOD(Mat3X3Constructor) {

@@ -132,6 +132,7 @@
     <ClInclude Include="XImageManager.h" />
     <ClInclude Include="XMath.h" />
     <ClInclude Include="XMatrix.h" />
+    <ClInclude Include="XMatrix3.h" />
     <ClInclude Include="XVector.h" />
     <ClInclude Include="XVector4.h" />
   </ItemGroup>
