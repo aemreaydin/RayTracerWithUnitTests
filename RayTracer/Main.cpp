@@ -3,7 +3,7 @@
 #include <crtdbg.h>
 
 
-#include "XVector.h"
+#include "XColor.h"
 #include "XCanvas.h"
 #include "XImageManager.h"
 
@@ -20,10 +20,10 @@ int main()
 	{
 		for (auto i = 0; i != nx; i++)
 		{
-			XVector vec(static_cast<float>(i) / nx, static_cast<float>(j) / ny, 0.2f);
-			vec *= 255.0f;
+			XColor color(static_cast<float>(i) / nx, static_cast<float>(j) / ny, 0.2f);
+			color *= 255.0f;
 
-			canvas.WriteToPixel(i, j, vec);
+			canvas.WriteToPixel(i, j, color);
 		}
 	}
 	XImageManager::SaveCanvasAsPpm("color.ppm", canvas);

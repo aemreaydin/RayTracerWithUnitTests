@@ -251,42 +251,6 @@ namespace RayTracerUnitTest
 
 			Assert::AreEqual(a.Inverse(), inverse);
 		}
-
-		//TEST_METHOD(Mat3X3Constructor) {
-		//	XMatrix3 a{1.0f, 2.0f, 3.0f,
-		//			  4.0f, 5.5f, 6.5f,
-		//			  7.5f, 8.5f, 9.0f};
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,0), 1.0f));
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,2), 3.0f));
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,1), 5.5f));
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(2,2), 9.0f));
-		//}
-		//TEST_METHOD(Mat2X2Constructor) {
-		//	XMatrix2 a{1.0f, 2.0f,
-		//			  3.0f, 4.0f};
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,0), 1.0f));
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(0,1), 2.0f));
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,0), 3.0f));
-		//	Assert::IsTrue(XMath::IsNearlyEqual(a.At(1,1), 4.0f));
-		//}
-
-		//TEST_METHOD(Mat4X4Comparison) {
-		//	XMatrix4 a{1.0f, 2.0f, 3.0f, 4.0f,
-		//			  5.5f, 6.5f, 7.5f, 8.5f,
-		//			  9.0f, 10.0f, 11.0f, 12.0f,
-		//			  13.5f, 14.5f, 15.5f, 16.5f};
-		//	XMatrix4 b{1.0f, 2.0f, 3.0f, 4.0f,
-		//			  5.5f, 6.5f, 7.5f, 8.5f,
-		//			  9.0f, 10.0f, 11.0f, 12.0f,
-		//			  13.5f, 14.5f, 15.5f, 16.5f};
-		//	XMatrix4 c{2.0f, 2.0f, 3.0f, 4.0f,
-		//			  5.5f, 6.5f, 7.5f, 8.5f,
-		//			  9.0f, 10.0f, 11.0f, 12.0f,
-		//			  13.5f, 14.5f, 15.5f, 16.5f};
-
-		//	Assert::IsTrue(a == b);
-		//	Assert::Isfalse(a == c);
-		//}
 	};
 
 	TEST_CLASS(MathUnitTest)
@@ -309,14 +273,14 @@ namespace RayTracerUnitTest
 		TEST_METHOD(CreateCanvas)
 		{
 			const XCanvas canvas(256, 256);
-			Assert::AreEqual(canvas.GetWidth(), 256);
-			Assert::AreEqual(canvas.GetHeight(), 256);
+			Assert::AreEqual(static_cast<int>(canvas.GetWidth()), 256);
+			Assert::AreEqual(static_cast<int>(canvas.GetHeight()), 256);
 		}
 
 		TEST_METHOD(WriteToPixel)
 		{
 			XCanvas canvas(256, 256);
-			const XVector red(255.0f, 0.0f, 0.0f);
+			const XColor red(255.0f, 0.0f, 0.0f);
 			canvas.WriteToPixel(2, 3, red);
 			Assert::AreEqual(canvas.GetPixel(2, 3), red);
 		}
@@ -324,25 +288,25 @@ namespace RayTracerUnitTest
 		TEST_METHOD(SaveCanvasAsPpm)
 		{
 			XCanvas canvas(3, 3);
-			canvas.WriteToPixel(0, 0, XVector(255.0f, 0.0f, 0.0f));
-			canvas.WriteToPixel(1, 1, XVector(0.0f, 255.0f, 255.0f));
-			canvas.WriteToPixel(2, 2, XVector(0.0f, 0.0f, 255.0f));
+			canvas.WriteToPixel(0, 0, XColor(255.0f, 0.0f, 0.0f));
+			canvas.WriteToPixel(1, 1, XColor(0.0f, 255.0f, 255.0f));
+			canvas.WriteToPixel(2, 2, XColor(0.0f, 0.0f, 255.0f));
 
 			const auto filename = "imageOutput.ppm";
 			XImageManager::SaveCanvasAsPpm(filename, canvas);
 
-			std::ifstream readfile(filename);
-			Assert::IsTrue(readfile.is_open());
+			std::ifstream readFile(filename);
+			Assert::IsTrue(readFile.is_open());
 
 			char out[256];
-			readfile.getline(out, 256);
-			readfile.getline(out, 256);
-			readfile.getline(out, 256);
-			readfile.getline(out, 256);
+			readFile.getline(out, 256);
+			readFile.getline(out, 256);
+			readFile.getline(out, 256);
+			readFile.getline(out, 256);
 			Assert::AreEqual(out, "255 0 0 0 0 0 0 0 0 ");
-			readfile.getline(out, 256);
+			readFile.getline(out, 256);
 			Assert::AreEqual(out, "0 0 0 0 255 255 0 0 0 ");
-			readfile.getline(out, 256);
+			readFile.getline(out, 256);
 			Assert::AreEqual(out, "0 0 0 0 0 0 0 0 255 ");
 		}
 	};
