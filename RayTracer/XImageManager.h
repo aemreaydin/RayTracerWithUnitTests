@@ -1,7 +1,7 @@
 #pragma once
 
 #include "XCanvas.h"
-#include "XVector.h"
+#include "XColor.h"
 #include "XMath.h"
 
 #include <fstream>
@@ -46,14 +46,13 @@ private:
 
 	static void WritePpmBody(const XCanvas& canvas, std::ofstream& output)
 	{
-		const auto& pixels = canvas.GetPixels();
-		for (const auto& row : pixels)
+		for (size_t i = 0; i != canvas.GetHeight(); i++)
 		{
-			for (const auto& col : row)
+			for (size_t j = 0; j != canvas.GetWidth(); j++)
 			{
-				output << static_cast<int>(XMath::Clamp(col.X, 0.0F, 255.0F)) << " "
-					<< static_cast<int>(XMath::Clamp(col.Y, 0.0F, 255.0F)) << " "
-					<< static_cast<int>(XMath::Clamp(col.Z, 0.0F, 255.0F)) << " ";
+				output << static_cast<int>(XMath::Clamp(canvas.GetPixel(i, j).Color.X, 0.0F, 255.0F)) << " "
+					<< static_cast<int>(XMath::Clamp(canvas.GetPixel(i, j).Color.Y, 0.0F, 255.0F)) << " "
+					<< static_cast<int>(XMath::Clamp(canvas.GetPixel(i, j).Color.Z, 0.0F, 255.0F)) << " ";
 			}
 			output << '\n';
 		}

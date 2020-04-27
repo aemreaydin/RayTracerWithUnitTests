@@ -46,9 +46,9 @@ inline XColor operator*(const XColor& lhs, const float scale)
 
 inline XColor::XColor()
 {
-	Color.X = 255.0f;
-	Color.Y = 255.0f;
-	Color.Z = 255.0f;
+	Color.X = 0.0f;
+	Color.Y = 0.0f;
+	Color.Z = 0.0f;
 	Color.W = 1.0f;
 }
 

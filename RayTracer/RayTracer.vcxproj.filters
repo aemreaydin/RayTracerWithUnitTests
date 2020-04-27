@@ -41,10 +41,10 @@
     <ClInclude Include="XVector4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XColor.h">
+    <ClInclude Include="XMatrix3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XMatrix3.h">
+    <ClInclude Include="XColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
