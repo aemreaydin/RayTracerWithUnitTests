@@ -12,10 +12,11 @@ int main()
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	XCanvas canvas;
+	
 
-	const auto nx = 256;
-	const auto ny = 256;
+	const auto nx = 4096;
+	const auto ny = 4096;
+	XCanvas canvas(nx, ny);
 	for (auto j = ny - 1; j >= 0; j--)
 	{
 		for (auto i = 0; i != nx; i++)

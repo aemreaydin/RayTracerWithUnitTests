@@ -38,7 +38,7 @@ namespace Microsoft
 			}
 
 			template <>
-			std::wstring ToString<XMatrix4>(const XMatrix4& t)
+			std::wstring ToString<XMatrix>(const XMatrix& t)
 			{
 				RETURN_WIDE_STRING(t.ToString().c_str());
 			}
@@ -134,13 +134,13 @@ namespace RayTracerUnitTest
 	{
 		TEST_METHOD(Mat4X4Constructor)
 		{
-			XMatrix4 a{
+			XMatrix a{
 				1.0f, 2.0f, 3.0f, 4.0f,
 				5.5f, 6.5f, 7.5f, 8.5f,
 				9.0f, 10.0f, 11.0f, 12.0f,
 				13.5f, 14.5f, 15.5f, 16.5f
 			};
-			XMatrix4 b{
+			XMatrix b{
 				{XVector4(1.0f, 2.0f, 3.0f, 4.0f)},
 				{XVector4(5.5f, 6.5f, 7.5f, 8.5f)},
 				{XVector4(9.0f, 10.0f, 11.0f, 12.0f)},
@@ -168,20 +168,20 @@ namespace RayTracerUnitTest
 
 		TEST_METHOD(MatrixMultiplication)
 		{
-			XMatrix4 a{
+			XMatrix a{
 				1.0f, 2.0f, 3.0f, 4.0f,
 				5.0f, 6.0f, 7.0f, 8.0f,
 				9.0f, 8.0f, 7.0f, 6.0f,
 				5.0f, 4.0f, 3.0f, 2.0f
 			};
-			const XMatrix4 b{
+			const XMatrix b{
 				{XVector4(-2.0f, 1.0f, 2.0f, 3.0f)},
 				{XVector4(3.0f, 2.0f, 1.0f, -1.0f)},
 				{XVector4(4.0f, 3.0f, 6.0f, 5.0f)},
 				{XVector4(1.0f, 2.0f, 7.0f, 8.0f)}
 			};
 
-			const XMatrix4 c{
+			const XMatrix c{
 				{XVector4(20.0f, 22.0f, 50.0f, 48.0f)},
 				{XVector4(44.0f, 54.0f, 114.0f, 108.0f)},
 				{XVector4(40.0f, 58.0f, 110.0f, 102.0f)},
@@ -191,18 +191,23 @@ namespace RayTracerUnitTest
 			Assert::AreEqual(c, a * b);
 			a *= b;
 			Assert::AreEqual(c, a);
+
+			const auto identity = XMatrix::Identity() * 4;
+			const auto vecToScale = XVector4(2.0f, 3.0f, 4.0f);
+
+			Assert::AreEqual(vecToScale * 4, identity * vecToScale);
 		}
 
 		TEST_METHOD(MatrixTranspose)
 		{
-			const XMatrix4 a{
+			const XMatrix a{
 				1.0f, 2.0f, 3.0f, 4.0f,
 				5.0f, 6.0f, 7.0f, 8.0f,
 				9.0f, 8.0f, 7.0f, 6.0f,
 				5.0f, 4.0f, 3.0f, 2.0f
 			};
 
-			const XMatrix4 transposed{
+			const XMatrix transposed{
 				1.0f, 5.0f, 9.0f, 5.0f,
 				2.0f, 6.0f, 8.0f, 4.0f,
 				3.0f, 7.0f, 7.0f, 3.0f,
@@ -215,14 +220,14 @@ namespace RayTracerUnitTest
 
 		TEST_METHOD(MatrixInvertable)
 		{
-			const XMatrix4 a{
+			const XMatrix a{
 				6.0f, 4.0f, 4.0f, 4.0f,
 				5.0f, 5.0f, 7.0f, 6.0f,
 				4.0f, -9.0f, 3.0f, -7.0f,
 				9.0f, 1.0f, 7.0f, 6.0f
 			};
 
-			const XMatrix4 b{
+			const XMatrix b{
 				-4.0f, 2.0f, -2.0f, -3.0f,
 				9.0f, 6.0f, 2.0f, 6.0f,
 				0.0f, -5.0f, 1.0f, -5.0f,
@@ -235,14 +240,14 @@ namespace RayTracerUnitTest
 		
 		TEST_METHOD(MatrixInverse)
 		{
-			const XMatrix4 a{
+			const XMatrix a{
 				-5.0f, 2.0f, 6.0f, -8.0f,
 				1.0f, -5.0f, 1.0f, 8.0f,
 				7.0f, 7.0f, -6.0f, -7.0f,
 				1.0f, -3.0f, 7.0f, 4.0f
 			};
 
-			const XMatrix4 inverse{
+			const XMatrix inverse{
 				0.21805f, 0.45113f, 0.24060f, -0.04511f,
 				-0.80827f, -1.45677f, -0.44361f, 0.52068f,
 				-0.07895f, -0.22368f, -0.05263f, 0.19737f,
@@ -250,6 +255,76 @@ namespace RayTracerUnitTest
 			};
 
 			Assert::AreEqual(a.Inverse(), inverse);
+		}
+
+		TEST_METHOD(MatrixTranslate)
+		{
+			const auto identity = XMatrix::Identity();
+			const auto translation = XVector4(5.0f, -3.0f, 2.0f);
+			auto point = XVector4(-3.0f, 4.0f, 5.0f);
+
+			const auto transMat = XMatrix::Translate(identity, translation, point);
+
+			Assert::AreEqual(transMat(0, 3), 5.0f);
+			Assert::AreEqual(transMat(1, 3), -3.0f);
+			Assert::AreEqual(transMat(2, 3), 2.0f);
+			Assert::AreEqual(point, XVector4(2.0f, 1.0f, 7.0f));
+		}
+
+		TEST_METHOD(MatrixScale)
+		{
+			const auto identity = XMatrix::Identity();
+			const auto scale = XVector4(4.0f, -3.0f, 2.0f);
+			auto point = XVector4(-3.0f, 1.0f, 8.0f);
+
+			const auto scaleMat = XMatrix::Scale(identity, scale, point);
+
+			Assert::AreEqual(scaleMat(0, 0), 4.0f);
+			Assert::AreEqual(scaleMat(1, 1), -3.0f);
+			Assert::AreEqual(scaleMat(2, 2), 2.0f);
+			Assert::AreEqual(point, XVector4(-12.0f, -3.0f, 16.0f));
+		}
+
+		TEST_METHOD(MatrixRotate)
+		{
+			auto point = XVector4(0.0f, 1.0f, 0.0f);
+			const auto angle = HALF_PI;
+			
+			const auto rotateXMat = XMatrix::RotateX(angle, point);
+			Assert::AreEqual(point, XVector4(0.0f, 0.0f, 1.0f));
+			const auto rotateYMat = XMatrix::RotateY(angle, point);
+			Assert::AreEqual(point, XVector4(1.0f, 0.0f, 0.0f));
+			const auto rotateZMat = XMatrix::RotateZ(angle, point);
+			Assert::AreEqual(point, XVector4(0.0f, 1.0f, 0.0f));
+		}
+
+		TEST_METHOD(MatrixShear)
+		{
+			auto point = XVector4(2.0f, 3.0f, 4.0f);
+			
+			auto shearMat = XMatrix::Shear(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, point);
+			Assert::AreEqual(point.X, 5.0f);
+
+			shearMat = XMatrix::Shear(0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, point);
+			Assert::AreEqual(point.X, 9.0f);
+			
+			shearMat = XMatrix::Shear(0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, point);
+			Assert::AreEqual(point.Y, 12.0f);
+			
+			shearMat = XMatrix::Shear(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, point);
+			Assert::AreEqual(point.Y, 16.0f);
+			
+			shearMat = XMatrix::Shear(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, point);
+			Assert::AreEqual(point.Z, 13.0f);
+			
+			shearMat = XMatrix::Shear(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, point);
+			Assert::AreEqual(point.Z, 29.0f);
+
+			point = XVector4(2.0f, 3.0f, 4.0f);
+			shearMat = XMatrix::Shear(1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, point);
+			Assert::AreEqual(point.X, 5.0f);
+			Assert::AreEqual(point.Y, 5.0f);
+			Assert::AreEqual(point.Z, 7.0f);
 		}
 	};
 

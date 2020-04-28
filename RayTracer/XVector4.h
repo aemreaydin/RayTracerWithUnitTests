@@ -19,6 +19,12 @@ struct XVector4
 	XVector4& operator*=(float scale);
 	XVector4& operator/=(float scale);
 
+	// Accessors
+	float operator()(Uint32 index) const;
+	float At(Uint32 index) const;
+	float& operator()(Uint32 index);
+	float& At(Uint32 index);
+
 	std::string ToString() const;
 };
 
@@ -134,6 +140,52 @@ inline XVector4& XVector4::operator/=(const float scale)
 	this->Y /= scale;
 	this->Z /= scale;
 	return *this;
+}
+
+inline float XVector4::operator()(const Uint32 index) const
+{
+	if (index > 3) throw std::runtime_error("Matrix out of bounds.");
+
+	return [&]()
+	{
+		if(index == 0) return X;
+		if(index == 1) return Y;
+		if(index == 2) return Z;
+		return W;
+	} ();
+}
+
+inline float XVector4::At(Uint32 index) const
+{
+	if (index > 3) throw std::runtime_error("Matrix out of bounds.");
+
+	return [&]()
+	{
+		if(index == 0) return X;
+		if(index == 1) return Y;
+		if(index == 2) return Z;
+		return W;
+	} ();
+}
+
+inline float& XVector4::operator()(const Uint32 index)
+{
+	if (index > 3) throw std::runtime_error("Matrix out of bounds.");
+
+	if(index == 0) return X;
+	if(index == 1) return Y;
+	if(index == 2) return Z;
+	return W;
+}
+
+inline float& XVector4::At(const Uint32 index)
+{
+	if (index > 3) throw std::runtime_error("Matrix out of bounds.");
+
+	if(index == 0) return X;
+	if(index == 1) return Y;
+	if(index == 2) return Z;
+	return W;
 }
 
 inline std::string XVector4::ToString() const

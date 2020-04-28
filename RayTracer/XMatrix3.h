@@ -24,7 +24,6 @@ struct XMatrix3
 	XMatrix3 Tranpose() const;
 	float Determinant() const;
 	bool IsMatrixInvertible() const;
-	XMatrix3 Inverse() const;
 	
 	static XMatrix3 Identity();
 	

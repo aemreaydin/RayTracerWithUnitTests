@@ -2,6 +2,9 @@
 #include <cmath>
 
 using Uint32 = uint32_t;
+
+static constexpr float PI = 3.1415926535897932f;
+static constexpr float HALF_PI = 1.57079632679f;
 static constexpr float EPSILON = 1e-8f;
 static constexpr float SMALL_EPSILON = 1e-4f;
 

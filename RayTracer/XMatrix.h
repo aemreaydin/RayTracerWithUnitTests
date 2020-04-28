@@ -4,34 +4,41 @@
 
 #include <DirectXMath.h>
 
-__declspec(align(16)) struct XMatrix4
+__declspec(align(16)) struct XMatrix
 {
 	float Matrix[4][4]{};
 
-	XMatrix4();
-	XMatrix4(float m00, float m01, float m02, float m03,
+	XMatrix();
+	XMatrix(float m00, float m01, float m02, float m03,
 	         float m10, float m11, float m12, float m13,
 	         float m20, float m21, float m22, float m23,
 	         float m30, float m31, float m32, float m33);
 
-	XMatrix4(XVector4 r1, XVector4 r2, XVector4 r3, XVector4 r4);
-	XMatrix4(XVector r1, XVector r2, XVector r3, XVector r4);
+	XMatrix(XVector4 r1, XVector4 r2, XVector4 r3, XVector4 r4);
+	XMatrix(XVector r1, XVector r2, XVector r3, XVector r4);
 
 	// Arithmetic Operations
-	XMatrix4& operator+=(const XMatrix4& rhs);
-	XMatrix4& operator-=(const XMatrix4& rhs);
-	XMatrix4& operator*=(const XMatrix4& rhs);
-	XMatrix4& operator*=(float scale);
-	XMatrix4& operator/=(float scale);
+	XMatrix& operator+=(const XMatrix& rhs);
+	XMatrix& operator-=(const XMatrix& rhs);
+	XMatrix& operator*=(const XMatrix& rhs);
+	XMatrix& operator*=(float scale);
+	XMatrix& operator/=(float scale);
 	
 	// Identity Functions
 	void SetIdentity();
-	XMatrix4 Tranpose() const;
+	XMatrix Tranpose() const;
 	float Determinant() const;
 	bool IsMatrixInvertible() const;
-	XMatrix4 Inverse() const;
+	XMatrix Inverse() const;
 	
-	static XMatrix4 Identity();
+	static XMatrix Identity();
+	static XMatrix Translate(const XMatrix& mat, const XVector4& translate, XVector4& point);
+	static XMatrix Scale(const XMatrix& mat, const XVector4& scale, XVector4& point);
+	static XMatrix RotateX(float angleInRadians, XVector4& point);
+	static XMatrix RotateY(float angleInRadians, XVector4& point);
+	static XMatrix RotateZ(float angleInRadians, XVector4& point);
+	static XMatrix Shear(float xy, float xz, float yx, float yz, float zx, float zy, XVector4& point);
+	static XMatrix Transform(const XVector4& translate, const XVector4& rotate, const XVector4& scale, XVector4& point);
 	
 	// Accessors
 	float operator()(Uint32 row, Uint32 col) const;
@@ -43,7 +50,7 @@ __declspec(align(16)) struct XMatrix4
 };
 
 //// START OF NON-MEMBER OPERATOR OVERLOADS
-inline bool operator==(const XMatrix4& lhs, const XMatrix4& rhs)
+inline bool operator==(const XMatrix& lhs, const XMatrix& rhs)
 {
 	for(Uint32 row = 0; row != 4; row++)
 	{
@@ -56,9 +63,9 @@ inline bool operator==(const XMatrix4& lhs, const XMatrix4& rhs)
 	return true;
 }
 
-inline XMatrix4 operator+(const XMatrix4& lhs, const XMatrix4& rhs)
+inline XMatrix operator+(const XMatrix& lhs, const XMatrix& rhs)
 {
-	auto matrix = XMatrix4();
+	auto matrix = XMatrix();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
@@ -69,9 +76,9 @@ inline XMatrix4 operator+(const XMatrix4& lhs, const XMatrix4& rhs)
 	return matrix;
 }
 
-inline XMatrix4 operator-(const XMatrix4& lhs, const XMatrix4& rhs)
+inline XMatrix operator-(const XMatrix& lhs, const XMatrix& rhs)
 {
-	auto matrix = XMatrix4();
+	auto matrix = XMatrix();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
@@ -82,9 +89,9 @@ inline XMatrix4 operator-(const XMatrix4& lhs, const XMatrix4& rhs)
 	return matrix;
 }
 
-inline XMatrix4 operator-(const XMatrix4& lhs)
+inline XMatrix operator-(const XMatrix& lhs)
 {
-	auto matrix = XMatrix4();
+	auto matrix = XMatrix();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
@@ -95,9 +102,9 @@ inline XMatrix4 operator-(const XMatrix4& lhs)
 	return matrix;
 }
 
-inline XMatrix4 operator*(const XMatrix4& lhs, const XMatrix4& rhs)
+inline XMatrix operator*(const XMatrix& lhs, const XMatrix& rhs)
 {
-	auto matrix = XMatrix4();
+	auto matrix = XMatrix();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
@@ -111,9 +118,23 @@ inline XMatrix4 operator*(const XMatrix4& lhs, const XMatrix4& rhs)
 	return matrix;
 }
 
-inline XMatrix4 operator*(const XMatrix4& lhs, const float scale)
+inline XVector4 operator*(const XMatrix& lhs, const XVector4& rhs)
 {
-	auto matrix = XMatrix4();
+	auto vector = XVector4();
+	for(Uint32 row = 0; row != 4; row++)
+	{
+		for(Uint32 col = 0; col != 4; col++)
+		{
+			vector(row) += lhs(row, col) * rhs(col);
+		}
+	}
+	return vector;
+}
+
+
+inline XMatrix operator*(const XMatrix& lhs, const float scale)
+{
+	auto matrix = XMatrix();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
@@ -124,9 +145,9 @@ inline XMatrix4 operator*(const XMatrix4& lhs, const float scale)
 	return matrix;
 }
 
-inline XMatrix4 operator/(const XMatrix4& lhs, const float scale)
+inline XMatrix operator/(const XMatrix& lhs, const float scale)
 {
-	auto matrix = XMatrix4();
+	auto matrix = XMatrix();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
@@ -139,7 +160,7 @@ inline XMatrix4 operator/(const XMatrix4& lhs, const float scale)
 
 //// END OF NON-MEMBER OPERATOR OVERLOADS
 
-inline XMatrix4::XMatrix4()
+inline XMatrix::XMatrix()
 {
 	Matrix[0][0] = 0.0f; Matrix[0][1] = 0.0f;  Matrix[0][2] = 0.0f;  Matrix[0][3] = 0.0f;
 	Matrix[1][0] = 0.0f; Matrix[1][1] = 0.0f;  Matrix[1][2] = 0.0f;  Matrix[1][3] = 0.0f;
@@ -147,7 +168,7 @@ inline XMatrix4::XMatrix4()
 	Matrix[3][0] = 0.0f; Matrix[3][1] = 0.0f;  Matrix[3][2] = 0.0f;  Matrix[3][3] = 0.0f;
 }
 
-inline XMatrix4::XMatrix4(const float m00, const float m01, const float m02, const float m03, 
+inline XMatrix::XMatrix(const float m00, const float m01, const float m02, const float m03, 
                           const float m10, const float m11, const float m12, const float m13, 
                           const float m20, const float m21, const float m22, const float m23, 
                           const float m30, const float m31, const float m32, const float m33)
@@ -158,7 +179,7 @@ inline XMatrix4::XMatrix4(const float m00, const float m01, const float m02, con
 	Matrix[3][0] = m30;	Matrix[3][1] = m31;	Matrix[3][2] = m32;	Matrix[3][3] = m33;
 }
 
-inline XMatrix4::XMatrix4(const XVector4 r1, const XVector4 r2, const XVector4 r3, const XVector4 r4)
+inline XMatrix::XMatrix(const XVector4 r1, const XVector4 r2, const XVector4 r3, const XVector4 r4)
 {
 	Matrix[0][0] = r1.X; Matrix[0][1] = r1.Y; Matrix[0][2] = r1.Z; Matrix[0][3] = r1.W;
 	Matrix[1][0] = r2.X; Matrix[1][1] = r2.Y; Matrix[1][2] = r2.Z; Matrix[1][3] = r2.W;
@@ -166,7 +187,7 @@ inline XMatrix4::XMatrix4(const XVector4 r1, const XVector4 r2, const XVector4 r
 	Matrix[3][0] = r4.X; Matrix[3][1] = r4.Y; Matrix[3][2] = r4.Z; Matrix[3][3] = r4.W;
 }
 
-inline XMatrix4::XMatrix4(const XVector r1, const XVector r2, const XVector r3, const XVector r4)
+inline XMatrix::XMatrix(const XVector r1, const XVector r2, const XVector r3, const XVector r4)
 {
 	Matrix[0][0] = r1.X; Matrix[0][1] = r1.Y; Matrix[0][2] = r1.Z; Matrix[0][3] = 0.0f;
 	Matrix[1][0] = r2.X; Matrix[1][1] = r2.Y; Matrix[1][2] = r2.Z; Matrix[1][3] = 0.0f;
@@ -174,7 +195,7 @@ inline XMatrix4::XMatrix4(const XVector r1, const XVector r2, const XVector r3, 
 	Matrix[3][0] = r4.X; Matrix[3][1] = r4.Y; Matrix[3][2] = r4.Z; Matrix[3][3] = 0.0f;
 }
 
-inline XMatrix4& XMatrix4::operator+=(const XMatrix4& rhs)
+inline XMatrix& XMatrix::operator+=(const XMatrix& rhs)
 {
 	for(Uint32 row = 0; row != 4; row++)
 	{
@@ -186,7 +207,7 @@ inline XMatrix4& XMatrix4::operator+=(const XMatrix4& rhs)
 	return *this;
 }
 
-inline XMatrix4& XMatrix4::operator-=(const XMatrix4& rhs)
+inline XMatrix& XMatrix::operator-=(const XMatrix& rhs)
 {
 	for(Uint32 row = 0; row != 4; row++)
 	{
@@ -198,9 +219,9 @@ inline XMatrix4& XMatrix4::operator-=(const XMatrix4& rhs)
 	return *this;
 }
 
-inline XMatrix4& XMatrix4::operator*=(const XMatrix4& rhs)
+inline XMatrix& XMatrix::operator*=(const XMatrix& rhs)
 {
-	auto matrix = XMatrix4();
+	auto matrix = XMatrix();
 	for(Uint32 row = 0; row != 4; row++)
 	{
 		for(Uint32 col = 0; col != 4; col++)
@@ -215,7 +236,7 @@ inline XMatrix4& XMatrix4::operator*=(const XMatrix4& rhs)
 	return *this;
 }
 
-inline XMatrix4& XMatrix4::operator*=(const float scale)
+inline XMatrix& XMatrix::operator*=(const float scale)
 {
 	for(Uint32 row = 0; row != 4; row++)
 	{
@@ -230,7 +251,7 @@ inline XMatrix4& XMatrix4::operator*=(const float scale)
 	return *this;
 }
 
-inline XMatrix4& XMatrix4::operator/=(const float scale)
+inline XMatrix& XMatrix::operator/=(const float scale)
 {
 	for(Uint32 row = 0; row != 4; row++)
 	{
@@ -245,7 +266,7 @@ inline XMatrix4& XMatrix4::operator/=(const float scale)
 	return *this;
 }
 
-inline void XMatrix4::SetIdentity()
+inline void XMatrix::SetIdentity()
 {
 	Matrix[0][0] = 1.0f; Matrix[0][1] = 0.0f;  Matrix[0][2] = 0.0f;  Matrix[0][3] = 0.0f;
 	Matrix[1][0] = 0.0f; Matrix[1][1] = 1.0f;  Matrix[1][2] = 0.0f;  Matrix[1][3] = 0.0f;
@@ -253,7 +274,7 @@ inline void XMatrix4::SetIdentity()
 	Matrix[3][0] = 0.0f; Matrix[3][1] = 0.0f;  Matrix[3][2] = 0.0f;  Matrix[3][3] = 1.0f;
 }
 
-inline XMatrix4 XMatrix4::Tranpose() const
+inline XMatrix XMatrix::Tranpose() const
 {
 	auto transposed = *this;
 	for(Uint32 row = 0; row != 4; row++)
@@ -267,7 +288,7 @@ inline XMatrix4 XMatrix4::Tranpose() const
 	return transposed;
 }
 
-inline float XMatrix4::Determinant() const
+inline float XMatrix::Determinant() const
 {
 	return Matrix[0][0] * (
 				Matrix[1][1] * (Matrix[2][2] * Matrix[3][3] - Matrix[2][3] * Matrix[3][2]) -
@@ -291,19 +312,19 @@ inline float XMatrix4::Determinant() const
 				);
 }
 
-inline bool XMatrix4::IsMatrixInvertible() const
+inline bool XMatrix::IsMatrixInvertible() const
 {
 	return Determinant() != 0.0f;
 }
 
-inline XMatrix4 XMatrix4::Inverse() const
+inline XMatrix XMatrix::Inverse() const
 {
 	if(!IsMatrixInvertible())
 		return Identity();
 
 	using namespace DirectX;
 	// ReSharper disable once CppLocalVariableMayBeConst
-	auto dstMatrix = XMatrix4();
+	auto dstMatrix = XMatrix();
 	
 	const auto xmMatrix = XMLoadFloat4x4A(reinterpret_cast<const XMFLOAT4X4A*>(Matrix));
 	const auto xmDstMatrix = XMMatrixInverse(nullptr, xmMatrix);
@@ -312,7 +333,7 @@ inline XMatrix4 XMatrix4::Inverse() const
 	return dstMatrix;
 }
 
-inline XMatrix4 XMatrix4::Identity()
+inline XMatrix XMatrix::Identity()
 {
 	return {XVector4(1.0f, 0.0f, 0.0f, 0.0f),
 		    XVector4(0.0f, 1.0f, 0.0f, 0.0f),
@@ -320,31 +341,109 @@ inline XMatrix4 XMatrix4::Identity()
 			XVector4(0.0f, 0.0f, 0.0f, 1.0f)};
 }
 
-inline float XMatrix4::operator()(const Uint32 row, const Uint32 col) const
+inline XMatrix XMatrix::Translate(const XMatrix& mat, const XVector4& translate, XVector4& point)
+{
+	auto transMat = mat;
+	transMat(0, 3) = translate.X;
+	transMat(1, 3) = translate.Y;
+	transMat(2, 3) = translate.Z;
+
+	point += mat * translate;
+	return transMat;
+}
+
+inline XMatrix XMatrix::Scale(const XMatrix& mat, const XVector4& scale, XVector4& point)
+{
+	auto scaleMat = mat;
+	scaleMat(0, 0) = scale.X;
+	scaleMat(1, 1) = scale.Y;
+	scaleMat(2, 2) = scale.Z;
+
+	point *= mat * scale;
+	return scaleMat;
+}
+
+inline XMatrix XMatrix::RotateX(const float angleInRadians, XVector4& point)
+{
+	auto rotateMat = Identity();
+	rotateMat(1, 1) = cosf(angleInRadians);
+	rotateMat(1, 2) = -sinf(angleInRadians);
+	rotateMat(2, 1) = sinf(angleInRadians);
+	rotateMat(2, 2) = cosf(angleInRadians);
+
+	point = rotateMat * point;
+	return rotateMat;
+}
+
+inline XMatrix XMatrix::RotateY(const float angleInRadians, XVector4& point)
+{
+	auto rotateMat = Identity();
+	rotateMat(0, 1) = cosf(angleInRadians);
+	rotateMat(0, 2) = sinf(angleInRadians);
+	rotateMat(2, 0) = -sinf(angleInRadians);
+	rotateMat(2, 2) = cosf(angleInRadians);
+
+	point = rotateMat * point;
+	return rotateMat;
+}
+
+inline XMatrix XMatrix::RotateZ(const float angleInRadians, XVector4& point)
+{
+	auto rotateMat = Identity();
+	rotateMat(0, 0) = cosf(angleInRadians);
+	rotateMat(0, 1) = -sinf(angleInRadians);
+	rotateMat(1, 0) = sinf(angleInRadians);
+	rotateMat(1, 1) = cosf(angleInRadians);
+
+	point = rotateMat * point;
+	return rotateMat;
+}
+
+inline XMatrix XMatrix::Shear(const float xy, const float xz, const float yx, const float yz, const float zx, const float zy, XVector4& point)
+{
+	auto shearMat = Identity();
+	shearMat(0, 1) = xy; shearMat(0, 2) = xz;
+	shearMat(1, 0) = yx; shearMat(1, 2) = yz;
+	shearMat(2, 0) = zx; shearMat(2, 1) = zy;
+
+	point = shearMat * point;
+	return shearMat;
+}
+
+inline XMatrix XMatrix::Transform(const XVector4& translate, const XVector4& rotate, const XVector4& scale,
+	XVector4& point)
+{
+	auto transformMatrix = Identity();
+	auto newPoint = XVector4();
+	auto translateMat = Translate(transformMatrix, translate, newPoint);
+	auto rotateMat = 
+}
+
+inline float XMatrix::operator()(const Uint32 row, const Uint32 col) const
 {
 	if (row > 3 || col > 3) throw std::runtime_error("Matrix out of bounds.");
 	return Matrix[row][col];
 }
 
-inline float XMatrix4::At(const Uint32 row, const Uint32 col) const
+inline float XMatrix::At(const Uint32 row, const Uint32 col) const
 {
 	if (row > 3 || col > 3) throw std::runtime_error("Matrix out of bounds.");
 	return Matrix[row][col];
 }
 
-inline float& XMatrix4::operator()(const Uint32 row, const Uint32 col)
+inline float& XMatrix::operator()(const Uint32 row, const Uint32 col)
 {
 	if (row > 3 || col > 3) throw std::runtime_error("Matrix out of bounds.");
 	return Matrix[row][col];
 }
 
-inline float& XMatrix4::At(const Uint32 row, const Uint32 col)
+inline float& XMatrix::At(const Uint32 row, const Uint32 col)
 {
 	if (row > 3 || col > 3) throw std::runtime_error("Matrix out of bounds.");
 	return Matrix[row][col];
 }
 
-inline std::string XMatrix4::ToString() const
+inline std::string XMatrix::ToString() const
 {
 	return std::to_string(Matrix[0][0]);
 }
