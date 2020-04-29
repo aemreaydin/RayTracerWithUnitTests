@@ -2,17 +2,13 @@
 #include <cstdlib>
 #include <crtdbg.h>
 
-
 #include "XColor.h"
 #include "XCanvas.h"
 #include "XImageManager.h"
 
-
 int main()
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-	
 
 	const auto nx = 4096;
 	const auto ny = 4096;
