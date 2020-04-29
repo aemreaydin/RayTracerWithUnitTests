@@ -89,7 +89,7 @@ inline XVector4 operator^(const XVector4 &lhs, const XVector4 &rhs)
 }
 //// END OF NON-MEMBER OPERATOR OVERLOADS
 
-inline XVector4::XVector4() : X(0.0f), Y(0.0f), Z(0.0f), W(0.0f)
+inline XVector4::XVector4() : X(0.0f), Y(0.0f), Z(0.0f), W(1.0f)
 {
 }
 
