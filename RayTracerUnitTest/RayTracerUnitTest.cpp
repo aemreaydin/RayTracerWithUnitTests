@@ -289,42 +289,58 @@ namespace RayTracerUnitTest
 		{
 			auto point = XVector4(0.0f, 1.0f, 0.0f);
 			const auto angle = HALF_PI;
+
+			const auto matrix = XMatrix::Identity();
 			
-			const auto rotateXMat = XMatrix::RotateX(angle, point);
+			XMatrix::RotateX(matrix, angle, point);
 			Assert::AreEqual(point, XVector4(0.0f, 0.0f, 1.0f));
-			const auto rotateYMat = XMatrix::RotateY(angle, point);
+			XMatrix::RotateY(matrix, angle, point);
 			Assert::AreEqual(point, XVector4(1.0f, 0.0f, 0.0f));
-			const auto rotateZMat = XMatrix::RotateZ(angle, point);
+			XMatrix::RotateZ(matrix, angle, point);
 			Assert::AreEqual(point, XVector4(0.0f, 1.0f, 0.0f));
 		}
 
 		TEST_METHOD(MatrixShear)
 		{
 			auto point = XVector4(2.0f, 3.0f, 4.0f);
+			const auto matrix = XMatrix::Identity();			
 			
-			auto shearMat = XMatrix::Shear(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, point);
+			XMatrix::Shear(matrix, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, point);
 			Assert::AreEqual(point.X, 5.0f);
 
-			shearMat = XMatrix::Shear(0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, point);
+			XMatrix::Shear(matrix, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, point);
 			Assert::AreEqual(point.X, 9.0f);
 			
-			shearMat = XMatrix::Shear(0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, point);
+			XMatrix::Shear(matrix, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, point);
 			Assert::AreEqual(point.Y, 12.0f);
 			
-			shearMat = XMatrix::Shear(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, point);
+			XMatrix::Shear(matrix, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, point);
 			Assert::AreEqual(point.Y, 16.0f);
 			
-			shearMat = XMatrix::Shear(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, point);
+			XMatrix::Shear(matrix, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, point);
 			Assert::AreEqual(point.Z, 13.0f);
 			
-			shearMat = XMatrix::Shear(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, point);
+			XMatrix::Shear(matrix, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, point);
 			Assert::AreEqual(point.Z, 29.0f);
 
 			point = XVector4(2.0f, 3.0f, 4.0f);
-			shearMat = XMatrix::Shear(1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, point);
+			XMatrix::Shear(matrix, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, point);
 			Assert::AreEqual(point.X, 5.0f);
 			Assert::AreEqual(point.Y, 5.0f);
 			Assert::AreEqual(point.Z, 7.0f);
+		}
+
+		TEST_METHOD(MatrixTransform)
+		{
+			auto point = XVector4(1.0f, 0.0f, 1.0f);
+			const auto matrix = XMatrix::Identity();
+			const auto angle = HALF_PI;
+
+			XMatrix::Transform(matrix, XVector4(10.0f, 5.0f, 7.0f), XVector4(angle, 0.0f, 0.0f), XVector4(5.0f, 5.0f, 5.0f), point);
+			
+			Assert::AreEqual(point.X, 15.0f);
+			Assert::AreEqual(point.Y, 0.0f);
+			Assert::AreEqual(point.Z, 7.0f);			
 		}
 	};
 

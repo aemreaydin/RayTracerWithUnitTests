@@ -34,11 +34,11 @@ __declspec(align(16)) struct XMatrix
 	static XMatrix Identity();
 	static XMatrix Translate(const XMatrix& mat, const XVector4& translate, XVector4& point);
 	static XMatrix Scale(const XMatrix& mat, const XVector4& scale, XVector4& point);
-	static XMatrix RotateX(float angleInRadians, XVector4& point);
-	static XMatrix RotateY(float angleInRadians, XVector4& point);
-	static XMatrix RotateZ(float angleInRadians, XVector4& point);
-	static XMatrix Shear(float xy, float xz, float yx, float yz, float zx, float zy, XVector4& point);
-	static XMatrix Transform(const XVector4& translate, const XVector4& rotate, const XVector4& scale, XVector4& point);
+	static XMatrix RotateX(const XMatrix& mat, float angleInRadians, XVector4& point);
+	static XMatrix RotateY(const XMatrix& mat, float angleInRadians, XVector4& point);
+	static XMatrix RotateZ(const XMatrix& mat, float angleInRadians, XVector4& point);
+	static XMatrix Shear(const XMatrix& mat, float xy, float xz, float yx, float yz, float zx, float zy, XVector4& point);
+	static XMatrix Transform(const XMatrix& mat, const XVector4& translate, const XVector4& rotate, const XVector4& scale, XVector4& point);
 	
 	// Accessors
 	float operator()(Uint32 row, Uint32 col) const;
@@ -349,7 +349,7 @@ inline XMatrix XMatrix::Translate(const XMatrix& mat, const XVector4& translate,
 	transMat(2, 3) = translate.Z;
 
 	point += mat * translate;
-	return transMat;
+	return mat * transMat;
 }
 
 inline XMatrix XMatrix::Scale(const XMatrix& mat, const XVector4& scale, XVector4& point)
@@ -360,11 +360,12 @@ inline XMatrix XMatrix::Scale(const XMatrix& mat, const XVector4& scale, XVector
 	scaleMat(2, 2) = scale.Z;
 
 	point *= mat * scale;
-	return scaleMat;
+	return mat * scaleMat;
 }
 
-inline XMatrix XMatrix::RotateX(const float angleInRadians, XVector4& point)
+inline XMatrix XMatrix::RotateX(const XMatrix& mat, const float angleInRadians, XVector4& point)
 {
+	if(angleInRadians == 0.0f) return mat;
 	auto rotateMat = Identity();
 	rotateMat(1, 1) = cosf(angleInRadians);
 	rotateMat(1, 2) = -sinf(angleInRadians);
@@ -372,11 +373,12 @@ inline XMatrix XMatrix::RotateX(const float angleInRadians, XVector4& point)
 	rotateMat(2, 2) = cosf(angleInRadians);
 
 	point = rotateMat * point;
-	return rotateMat;
+	return mat * rotateMat;
 }
 
-inline XMatrix XMatrix::RotateY(const float angleInRadians, XVector4& point)
+inline XMatrix XMatrix::RotateY(const XMatrix& mat, const float angleInRadians, XVector4& point)
 {
+	if(angleInRadians == 0.0f) return mat;
 	auto rotateMat = Identity();
 	rotateMat(0, 1) = cosf(angleInRadians);
 	rotateMat(0, 2) = sinf(angleInRadians);
@@ -384,11 +386,12 @@ inline XMatrix XMatrix::RotateY(const float angleInRadians, XVector4& point)
 	rotateMat(2, 2) = cosf(angleInRadians);
 
 	point = rotateMat * point;
-	return rotateMat;
+	return mat * rotateMat;
 }
 
-inline XMatrix XMatrix::RotateZ(const float angleInRadians, XVector4& point)
+inline XMatrix XMatrix::RotateZ(const XMatrix& mat, const float angleInRadians, XVector4& point)
 {
+	if(angleInRadians == 0.0f) return mat;
 	auto rotateMat = Identity();
 	rotateMat(0, 0) = cosf(angleInRadians);
 	rotateMat(0, 1) = -sinf(angleInRadians);
@@ -396,10 +399,10 @@ inline XMatrix XMatrix::RotateZ(const float angleInRadians, XVector4& point)
 	rotateMat(1, 1) = cosf(angleInRadians);
 
 	point = rotateMat * point;
-	return rotateMat;
+	return mat * rotateMat;
 }
 
-inline XMatrix XMatrix::Shear(const float xy, const float xz, const float yx, const float yz, const float zx, const float zy, XVector4& point)
+inline XMatrix XMatrix::Shear(const XMatrix& mat, const float xy, const float xz, const float yx, const float yz, const float zx, const float zy, XVector4& point)
 {
 	auto shearMat = Identity();
 	shearMat(0, 1) = xy; shearMat(0, 2) = xz;
@@ -407,16 +410,22 @@ inline XMatrix XMatrix::Shear(const float xy, const float xz, const float yx, co
 	shearMat(2, 0) = zx; shearMat(2, 1) = zy;
 
 	point = shearMat * point;
-	return shearMat;
+	return mat * shearMat;
 }
 
-inline XMatrix XMatrix::Transform(const XVector4& translate, const XVector4& rotate, const XVector4& scale,
+inline XMatrix XMatrix::Transform(const XMatrix& mat, const XVector4& translate, const XVector4& rotate, const XVector4& scale,
 	XVector4& point)
 {
-	auto transformMatrix = Identity();
-	auto newPoint = XVector4();
-	auto translateMat = Translate(transformMatrix, translate, newPoint);
-	auto rotateMat = 
+	auto newPoint = point;
+	const auto transMat = Translate(mat, translate, newPoint);
+	const auto scaleMat = Scale(mat, scale, newPoint);
+	const auto rotZMat = RotateZ(mat, rotate.Z, newPoint);		
+	const auto rotYMat = RotateY(mat, rotate.Y, newPoint);		
+	const auto rotXMat = RotateX(mat, rotate.X, newPoint);
+	const auto rotMat = rotZMat * rotYMat * rotXMat;
+	const auto transformMat = transMat * scaleMat * rotMat;
+	point = transformMat * point;
+	return mat * transformMat;
 }
 
 inline float XMatrix::operator()(const Uint32 row, const Uint32 col) const
